@@ -20,7 +20,7 @@ npm install
 
 ### 2. Run the codemod
 
-After publishing to npm, you can run the codemod directly with npx:
+After publishing to npm, you can run the codemod directly with npx: [TO DO]
 
 ```
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 <path> [options]
