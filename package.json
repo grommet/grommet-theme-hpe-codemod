@@ -1,21 +1,28 @@
 {
   "name": "grommet-theme-hpe-codemod",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "description": "",
   "bin": {
     "grommet-theme-hpe-codemod": "bin/cli.js"
   },
+  "files": [
+    "bin",
+    "transforms",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "jscodeshift": "^17.3.0"
   },
   "devDependencies": {
+    "eslint": "^9.35.0",
+    "prettier": "^3.6.2",
     "vitest": "^3.2.4"
   }
 }
