@@ -1013,7 +1013,7 @@ module.exports = (file, api, options) => {
 
   // Handle components with container size mapping (Meter, TableCell, Cards)
   //  test -> <Chart size="small" />
-  ['Meter', 'TableCell', 'Cards', 'DataCahrt', 'Chart'].forEach(
+  ['Meter', 'TableCell', 'Cards', 'DataChart', 'Chart'].forEach(
     (componentName) => {
       root
         .find(j.JSXElement, {
