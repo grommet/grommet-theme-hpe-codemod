@@ -7,37 +7,37 @@
 // disabled for codemod transform scripts, since it is typical to
 // re-assign the function parameters of the nodes/path/attr.
 
-const SPACING_PROPS = ["gap", "margin", "pad", "thickness"];
-const BORDER_PROPS = ["border"];
-const CONTAINER_PROPS = ["height", "width"];
-const RADIUS_PROPS = ["round"];
-const OTHER_PROPS = ["nameProps", "valueProps"];
+const SPACING_PROPS = ['gap', 'margin', 'pad', 'thickness'];
+const BORDER_PROPS = ['border'];
+const CONTAINER_PROPS = ['height', 'width'];
+const RADIUS_PROPS = ['round'];
+const OTHER_PROPS = ['nameProps', 'valueProps'];
 
 // maps for each category
 const MAPS = {
   spacing: {
-    xxsmall: "5xsmall",
-    xsmall: "3xsmall",
-    small: "xsmall",
-    large: "xlarge",
-    xlarge: "3xlarge",
+    xxsmall: '5xsmall',
+    xsmall: '3xsmall',
+    small: 'xsmall',
+    large: 'xlarge',
+    xlarge: '3xlarge',
   },
   border: {
-    xlarge: "large",
+    xlarge: 'large',
   },
   container: {
-    xxsmall: "5xsmall",
-    xsmall: "3xsmall",
-    small: "xsmall",
-    large: "xlarge",
-    xlarge: "xxlarge",
-    xxlarge: "3xlarge",
+    xxsmall: '5xsmall',
+    xsmall: '3xsmall',
+    small: 'xsmall',
+    large: 'xlarge',
+    xlarge: 'xxlarge',
+    xxlarge: '3xlarge',
   },
   radius: {
-    small: "medium",
-    medium: "xlarge",
-    large: "xxlarge",
-    xlarge: "xxlarge",
+    small: 'medium',
+    medium: 'xlarge',
+    large: 'xxlarge',
+    xlarge: 'xxlarge',
   },
 };
 
@@ -45,7 +45,7 @@ const MAPS = {
 const getMapForProp = (prop) => {
   if (SPACING_PROPS.includes(prop)) return MAPS.spacing;
   if (BORDER_PROPS.includes(prop)) return MAPS.border;
-  if (CONTAINER_PROPS.includes(prop) || prop === "columns" || prop === "rows")
+  if (CONTAINER_PROPS.includes(prop) || prop === 'columns' || prop === 'rows')
     return MAPS.container;
   if (RADIUS_PROPS.includes(prop)) return MAPS.radius;
   return null;
@@ -58,22 +58,22 @@ const replaceSize = (prop, value, fileInfo = {}) => {
 
   const newValue = map[value] || value;
 
-  const fileLocation = fileInfo.file ? ` in ${fileInfo.file}` : "";
-  const lineLocation = fileInfo.line ? ` at line ${fileInfo.line}` : "";
+  const fileLocation = fileInfo.file ? ` in ${fileInfo.file}` : '';
+  const lineLocation = fileInfo.line ? ` at line ${fileInfo.line}` : '';
 
   // Show deprecation warnings for radius props
   if (RADIUS_PROPS.includes(prop)) {
-    if (value === "large" || value === "xlarge") {
+    if (value === 'large' || value === 'xlarge') {
       /* eslint-disable no-console */
       console.warn(
         `⚠️  DEPRECATION: radius="${value}" (${
-          value === "large" ? "48px" : "96px"
-        }) is deprecated and now maps to "xxlarge" (32px)${fileLocation}${lineLocation}.`
+          value === 'large' ? '48px' : '96px'
+        }) is deprecated and now maps to "xxlarge" (32px)${fileLocation}${lineLocation}.`,
       );
-    } else if (value === "xxsmall") {
+    } else if (value === 'xxsmall') {
       /* eslint-disable no-console */
       console.warn(
-        `⚠️  DEPRECATION: radius="xxsmall" (3px) is deprecated and now maps to "xxsmall" (4px)${fileLocation}${lineLocation}.`
+        `⚠️  DEPRECATION: radius="xxsmall" (3px) is deprecated and now maps to "xxsmall" (4px)${fileLocation}${lineLocation}.`,
       );
     }
   }
@@ -81,20 +81,18 @@ const replaceSize = (prop, value, fileInfo = {}) => {
   // Show deprecation warnings for border props
   if (
     BORDER_PROPS.includes(prop) &&
-    (value === "large" || value === "xlarge")
+    (value === 'large' || value === 'xlarge')
   ) {
-    const oldSize = value === "large" ? "12px" : "24px";
-    /* eslint-disable no-console */
+    const oldSize = value === 'large' ? '12px' : '24px';
     console.warn(
-      `⚠️  DEPRECATION: border="${value}" (${oldSize}) is deprecated and now maps to "large" (6px)${fileLocation}${lineLocation}.`
+      `⚠️  DEPRECATION: border="${value}" (${oldSize}) is deprecated and now maps to "large" (6px)${fileLocation}${lineLocation}.`,
     );
   }
 
   // Show deprecation warnings for container props
-  if (CONTAINER_PROPS.includes(prop) && value === "xlarge") {
-    /* eslint-disable no-console */
+  if (CONTAINER_PROPS.includes(prop) && value === 'xlarge') {
     console.warn(
-      `⚠️  DEPRECATION: ${prop}="${value}" (1152px) is deprecated and now maps to "xxlarge" (1024px)${fileLocation}${lineLocation}.`
+      `⚠️  DEPRECATION: ${prop}="${value}" (1152px) is deprecated and now maps to "xxlarge" (1024px)${fileLocation}${lineLocation}.`,
     );
   }
 
@@ -104,8 +102,8 @@ const replaceSize = (prop, value, fileInfo = {}) => {
 // helper for compatibility with JS + TS parser
 const isStringLiteral = (n) =>
   n &&
-  ((n.type === "Literal" && typeof n.value === "string") ||
-    n.type === "StringLiteral");
+  ((n.type === 'Literal' && typeof n.value === 'string') ||
+    n.type === 'StringLiteral');
 
 // Recursively traverse and replace t-shirt sizes in complex data structures
 // Handles arrays, objects, conditionals, logical expressions, etc.
@@ -122,24 +120,24 @@ const deepReplaceSize = (prop, node, fileInfo) => {
     }
     return node;
   }
-  if (node.type === "ArrayExpression") {
+  if (node.type === 'ArrayExpression') {
     // Use container map for columns/rows arrays
     let arrayProp = prop;
-    if (prop === "columns" || prop === "rows") arrayProp = "width";
+    if (prop === 'columns' || prop === 'rows') arrayProp = 'width';
     node.elements = node.elements.map((el) =>
-      deepReplaceSize(arrayProp, el, fileInfo)
+      deepReplaceSize(arrayProp, el, fileInfo),
     );
     return node;
   }
 
   // CallExpression - handle .includes() specially
-  if (node.type === "CallExpression") {
+  if (node.type === 'CallExpression') {
     // If this is a .includes() call, don't transform the array argument
     if (
       node.callee &&
-      node.callee.type === "MemberExpression" &&
+      node.callee.type === 'MemberExpression' &&
       node.callee.property &&
-      node.callee.property.name === "includes"
+      node.callee.property.name === 'includes'
     ) {
       // Don't transform the array (callee.object) or the arguments
       // Just return the node as-is
@@ -148,14 +146,14 @@ const deepReplaceSize = (prop, node, fileInfo) => {
     // For other call expressions, transform arguments normally
     if (node.arguments) {
       node.arguments = node.arguments.map((arg) =>
-        deepReplaceSize(prop, arg, fileInfo)
+        deepReplaceSize(prop, arg, fileInfo),
       );
     }
     return node;
   }
 
   // Object
-  if (node.type === "ObjectExpression") {
+  if (node.type === 'ObjectExpression') {
     node.properties.forEach((p) => {
       // Key-based mapping for container props (e.g., width, height)
       const keyName = p.key && (p.key.name || p.key.value);
@@ -166,19 +164,19 @@ const deepReplaceSize = (prop, node, fileInfo) => {
     return node;
   }
   // Conditional
-  if (node.type === "ConditionalExpression") {
+  if (node.type === 'ConditionalExpression') {
     node.consequent = deepReplaceSize(prop, node.consequent, fileInfo);
     node.alternate = deepReplaceSize(prop, node.alternate, fileInfo);
     return node;
   }
   // Logical expression (e.g., a && 'small')
-  if (node.type === "LogicalExpression") {
+  if (node.type === 'LogicalExpression') {
     node.left = deepReplaceSize(prop, node.left, fileInfo);
     node.right = deepReplaceSize(prop, node.right, fileInfo);
     return node;
   }
   // MemberExpression (e.g., pad.small)
-  if (node.type === "MemberExpression") {
+  if (node.type === 'MemberExpression') {
     node.object = deepReplaceSize(prop, node.object, fileInfo);
     node.property = deepReplaceSize(prop, node.property, fileInfo);
     return node;
@@ -196,17 +194,17 @@ const getFileInfo = (file, node) => ({
 // Improved scanning function - only flag variable declarations and suspicious patterns
 const scanForTshirtSizes = (file, root, j) => {
   const tshirtSizes = [
-    "xxsmall",
-    "xsmall",
-    "small",
-    "medium",
-    "large",
-    "xlarge",
-    "xxlarge",
-    "3xsmall",
-    "4xsmall",
-    "5xsmall",
-    "3xlarge",
+    'xxsmall',
+    'xsmall',
+    'small',
+    'medium',
+    'large',
+    'xlarge',
+    'xxlarge',
+    '3xsmall',
+    '4xsmall',
+    '5xsmall',
+    '3xlarge',
   ];
 
   let foundAny = false;
@@ -219,8 +217,8 @@ const scanForTshirtSizes = (file, root, j) => {
 
     // Check if the initial value is a t-shirt size string
     if (isStringLiteral(init) && tshirtSizes.includes(init.value)) {
-      const varName = id.name || "unknown";
-      const line = path.node.loc ? path.node.loc.start.line : "?";
+      const varName = id.name || 'unknown';
+      const line = path.node.loc ? path.node.loc.start.line : '?';
 
       if (!foundAny) {
         console.log(`\n📁 ${file.path}`);
@@ -228,36 +226,36 @@ const scanForTshirtSizes = (file, root, j) => {
       }
 
       console.warn(
-        `  ⚠️  Line ${line}: const ${varName} = "${init.value}" - may need manual review`
+        `  ⚠️  Line ${line}: const ${varName} = "${init.value}" - may need manual review`,
       );
     }
 
     // Check for object assignments: const padding = { top: 'small', left: 'large' }
-    if (init.type === "ObjectExpression") {
+    if (init.type === 'ObjectExpression') {
       let hasAnyTshirtSize = false;
       const foundSizes = [];
 
       // Check if this object has style-related properties
       const hasStyleProps = init.properties.some((prop) => {
-        if (prop.type === "Property" || prop.type === "ObjectProperty") {
+        if (prop.type === 'Property' || prop.type === 'ObjectProperty') {
           // ADD ObjectProperty HERE
           const keyName = prop.key.name || prop.key.value;
           return [
-            "pad",
-            "margin",
-            "gap",
-            "width",
-            "height",
-            "round",
-            "border",
-            "thickness",
+            'pad',
+            'margin',
+            'gap',
+            'width',
+            'height',
+            'round',
+            'border',
+            'thickness',
             // Add directional properties
-            "top",
-            "bottom",
-            "left",
-            "right",
-            "horizontal",
-            "vertical",
+            'top',
+            'bottom',
+            'left',
+            'right',
+            'horizontal',
+            'vertical',
           ].includes(keyName);
         }
         return false;
@@ -265,7 +263,7 @@ const scanForTshirtSizes = (file, root, j) => {
 
       // Check if this object has t-shirt size keys
       const hasTshirtSizeKeys = init.properties.some((prop) => {
-        if (prop.type === "Property" || prop.type === "ObjectProperty") {
+        if (prop.type === 'Property' || prop.type === 'ObjectProperty') {
           const keyName = prop.key.name || prop.key.value;
           const isMatch = tshirtSizes.includes(keyName);
           return isMatch;
@@ -275,7 +273,7 @@ const scanForTshirtSizes = (file, root, j) => {
 
       // Add this after the existing hasTshirtSizeKeys check:
       const tshirtSizeKeyCount = init.properties.filter((prop) => {
-        if (prop.type === "Property" || prop.type === "ObjectProperty") {
+        if (prop.type === 'Property' || prop.type === 'ObjectProperty') {
           const keyName = prop.key.name || prop.key.value;
           const isMatch = tshirtSizes.includes(keyName);
           return isMatch;
@@ -293,7 +291,7 @@ const scanForTshirtSizes = (file, root, j) => {
       // This excludes random objects like { name: 'small', type: 'medium' }
       if (hasStyleProps || hasTshirtSizeKeys || mostlyTshirtSizeKeys) {
         init.properties.forEach((prop) => {
-          if (prop.type === "Property" || prop.type === "ObjectProperty") {
+          if (prop.type === 'Property' || prop.type === 'ObjectProperty') {
             // ADD ObjectProperty HERE
             // Check if property key is a t-shirt size
             const propKey = prop.key.name || prop.key.value;
@@ -315,8 +313,8 @@ const scanForTshirtSizes = (file, root, j) => {
       }
 
       if (hasAnyTshirtSize) {
-        const varName = id.name || "unknown";
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const varName = id.name || 'unknown';
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -325,14 +323,14 @@ const scanForTshirtSizes = (file, root, j) => {
 
         console.warn(
           `  ⚠️  Line ${line}: const ${varName} = { ${foundSizes.join(
-            ", "
-          )} } - may need manual review`
+            ', ',
+          )} } - may need manual review`,
         );
       }
     }
 
     // Check for array assignments: const sizes = ['small', 'large'] or nested arrays
-    if (init.type === "ArrayExpression") {
+    if (init.type === 'ArrayExpression') {
       let hasAnyTshirtSize = false;
       const foundSizes = [];
 
@@ -343,7 +341,7 @@ const scanForTshirtSizes = (file, root, j) => {
             foundSizes.push(`"${element.value}"`);
           }
           // Handle nested arrays like [['medium', 'auto'], ['small', 'medium']]
-          else if (element && element.type === "ArrayExpression") {
+          else if (element && element.type === 'ArrayExpression') {
             checkArrayForTshirtSizes(element.elements, depth + 1);
           }
         });
@@ -352,8 +350,8 @@ const scanForTshirtSizes = (file, root, j) => {
       checkArrayForTshirtSizes(init.elements);
 
       if (hasAnyTshirtSize) {
-        const varName = id.name || "unknown";
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const varName = id.name || 'unknown';
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -362,14 +360,14 @@ const scanForTshirtSizes = (file, root, j) => {
 
         console.warn(
           `  ⚠️  Line ${line}: const ${varName} = [${foundSizes.join(
-            ", "
-          )}] - may need manual review`
+            ', ',
+          )}] - may need manual review`,
         );
       }
     }
 
     // Check for conditional expressions: const size = condition ? 'small' : 'medium'
-    if (init.type === "ConditionalExpression") {
+    if (init.type === 'ConditionalExpression') {
       let hasAnyTshirtSize = false;
       const foundSizes = [];
 
@@ -379,24 +377,24 @@ const scanForTshirtSizes = (file, root, j) => {
           foundSizes.push(`"${node.value}"`);
         }
         // Handle arrays in conditionals
-        if (node.type === "ArrayExpression") {
+        if (node.type === 'ArrayExpression') {
           node.elements.forEach((element) => {
             checkConditionalForTshirtSizes(element);
           });
         }
         // Handle nested conditionals
-        if (node.type === "ConditionalExpression") {
+        if (node.type === 'ConditionalExpression') {
           checkConditionalForTshirtSizes(node.test);
           checkConditionalForTshirtSizes(node.consequent);
           checkConditionalForTshirtSizes(node.alternate);
         }
         // Handle call expressions like .includes()
-        if (node.type === "CallExpression") {
+        if (node.type === 'CallExpression') {
           // Check the callee (the array part of ['x', 'y'].includes())
           if (
             node.callee &&
             node.callee.object &&
-            node.callee.object.type === "ArrayExpression"
+            node.callee.object.type === 'ArrayExpression'
           ) {
             node.callee.object.elements.forEach((element) => {
               checkConditionalForTshirtSizes(element);
@@ -410,8 +408,8 @@ const scanForTshirtSizes = (file, root, j) => {
       checkConditionalForTshirtSizes(init.alternate);
 
       if (hasAnyTshirtSize) {
-        const varName = id.name || "unknown";
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const varName = id.name || 'unknown';
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -420,28 +418,28 @@ const scanForTshirtSizes = (file, root, j) => {
 
         console.warn(
           `  ⚠️  Line ${line}: const ${varName} = [${foundSizes.join(
-            ", "
-          )}] - may need manual review`
+            ', ',
+          )}] - may need manual review`,
         );
       }
     }
 
     // Check for destructuring with default values: const { round = 'xxsmall', size = 'medium' } = indicator;
-    if (id.type === "ObjectPattern") {
+    if (id.type === 'ObjectPattern') {
       let hasAnyTshirtSize = false;
       const foundSizes = [];
 
       const checkDestructuringForTshirtSizes = (pattern) => {
         pattern.properties.forEach((prop) => {
-          if (prop.type === "Property") {
+          if (prop.type === 'Property') {
             // Handle simple destructuring: { round, size }
-            if (prop.value.type === "Identifier") {
+            if (prop.value.type === 'Identifier') {
               // No default value, skip
               return;
             }
 
             // Handle destructuring with defaults: { round = 'xxsmall', size = 'medium' }
-            if (prop.value.type === "AssignmentPattern") {
+            if (prop.value.type === 'AssignmentPattern') {
               const keyName = prop.key.name || prop.key.value;
               const defaultValue = prop.value.right;
 
@@ -455,7 +453,7 @@ const scanForTshirtSizes = (file, root, j) => {
               }
 
               // Check for complex default values (conditionals, etc.)
-              if (defaultValue.type === "ConditionalExpression") {
+              if (defaultValue.type === 'ConditionalExpression') {
                 const checkConditionalInDefault = (node) => {
                   if (
                     isStringLiteral(node) &&
@@ -464,7 +462,7 @@ const scanForTshirtSizes = (file, root, j) => {
                     hasAnyTshirtSize = true;
                     foundSizes.push(`${keyName} = "${node.value}"`);
                   }
-                  if (node.type === "ConditionalExpression") {
+                  if (node.type === 'ConditionalExpression') {
                     checkConditionalInDefault(node.consequent);
                     checkConditionalInDefault(node.alternate);
                   }
@@ -475,7 +473,7 @@ const scanForTshirtSizes = (file, root, j) => {
           }
 
           // Handle rest patterns if needed
-          if (prop.type === "RestElement") {
+          if (prop.type === 'RestElement') {
             // Skip rest elements for now
             return;
           }
@@ -485,7 +483,7 @@ const scanForTshirtSizes = (file, root, j) => {
       checkDestructuringForTshirtSizes(id);
 
       if (hasAnyTshirtSize) {
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -494,8 +492,8 @@ const scanForTshirtSizes = (file, root, j) => {
 
         console.warn(
           `  ⚠️  Line ${line}: const { ${foundSizes.join(
-            ", "
-          )} } = ... - may need manual review`
+            ', ',
+          )} } = ... - may need manual review`,
         );
       }
     }
@@ -506,37 +504,37 @@ const scanForTshirtSizes = (file, root, j) => {
     const { left, right } = path.node;
 
     // Only check object assignments
-    if (right && right.type === "ObjectExpression") {
+    if (right && right.type === 'ObjectExpression') {
       let hasAnyTshirtSize = false;
       const foundSizes = [];
 
       // Check if this object has style-related properties or t-shirt size keys
       const hasStyleProps = right.properties.some((prop) => {
-        if (prop.type === "Property") {
+        if (prop.type === 'Property') {
           const keyName = prop.key.name || prop.key.value;
           return [
-            "pad",
-            "margin",
-            "gap",
-            "width",
-            "height",
-            "round",
-            "border",
-            "thickness",
+            'pad',
+            'margin',
+            'gap',
+            'width',
+            'height',
+            'round',
+            'border',
+            'thickness',
             // Add directional properties
-            "top",
-            "bottom",
-            "left",
-            "right",
-            "horizontal",
-            "vertical",
+            'top',
+            'bottom',
+            'left',
+            'right',
+            'horizontal',
+            'vertical',
           ].includes(keyName);
         }
         return false;
       });
 
       const hasTshirtSizeKeys = right.properties.some((prop) => {
-        if (prop.type === "Property") {
+        if (prop.type === 'Property') {
           const keyName = prop.key.name || prop.key.value;
           return tshirtSizes.includes(keyName);
         }
@@ -546,28 +544,28 @@ const scanForTshirtSizes = (file, root, j) => {
       // Check nested objects for style properties (like container: { pad: 'xsmall' })
       const hasNestedStyleProps = right.properties.some((prop) => {
         if (
-          prop.type === "Property" &&
+          prop.type === 'Property' &&
           prop.value &&
-          prop.value.type === "ObjectExpression"
+          prop.value.type === 'ObjectExpression'
         ) {
           return prop.value.properties.some((nestedProp) => {
-            if (nestedProp.type === "Property") {
+            if (nestedProp.type === 'Property') {
               const keyName = nestedProp.key.name || nestedProp.key.value;
               return [
-                "pad",
-                "margin",
-                "gap",
-                "width",
-                "height",
-                "round",
-                "border",
-                "thickness",
-                "top",
-                "bottom",
-                "left",
-                "right",
-                "horizontal",
-                "vertical",
+                'pad',
+                'margin',
+                'gap',
+                'width',
+                'height',
+                'round',
+                'border',
+                'thickness',
+                'top',
+                'bottom',
+                'left',
+                'right',
+                'horizontal',
+                'vertical',
               ].includes(keyName);
             }
             return false;
@@ -579,9 +577,9 @@ const scanForTshirtSizes = (file, root, j) => {
       // Process if it has style-related properties or nested style properties
       if (hasStyleProps || hasTshirtSizeKeys || hasNestedStyleProps) {
         // Helper function to recursively check for t-shirt sizes in nested objects
-        const checkObjectForTshirtSizes = (obj, prefix = "") => {
+        const checkObjectForTshirtSizes = (obj, prefix = '') => {
           obj.properties.forEach((prop) => {
-            if (prop.type === "Property") {
+            if (prop.type === 'Property') {
               const propKey = prop.key.name || prop.key.value;
               const fullKey = prefix ? `${prefix}.${propKey}` : propKey;
 
@@ -601,7 +599,7 @@ const scanForTshirtSizes = (file, root, j) => {
               }
 
               // Recursively check nested objects
-              if (prop.value && prop.value.type === "ObjectExpression") {
+              if (prop.value && prop.value.type === 'ObjectExpression') {
                 checkObjectForTshirtSizes(prop.value, fullKey);
               }
             }
@@ -612,8 +610,8 @@ const scanForTshirtSizes = (file, root, j) => {
       }
 
       if (hasAnyTshirtSize) {
-        const varName = left.type === "Identifier" ? left.name : "unknown";
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const varName = left.type === 'Identifier' ? left.name : 'unknown';
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -622,8 +620,8 @@ const scanForTshirtSizes = (file, root, j) => {
 
         console.warn(
           `  ⚠️  Line ${line}: ${varName} = { ${foundSizes.join(
-            ", "
-          )} } - may need manual review`
+            ', ',
+          )} } - may need manual review`,
         );
       }
     }
@@ -638,15 +636,15 @@ const scanForTshirtSizes = (file, root, j) => {
       node.object &&
       node.object.object &&
       node.object.object.object &&
-      node.object.object.object.name === "theme" &&
+      node.object.object.object.name === 'theme' &&
       node.object.object.property &&
-      node.object.object.property.name === "global" &&
+      node.object.object.property.name === 'global' &&
       node.object.property &&
-      node.object.property.name === "edgeSize"
+      node.object.property.name === 'edgeSize'
     ) {
       const sizeName = node.property.name || node.property.value;
       if (tshirtSizes.includes(sizeName)) {
-        const line = path.node.loc ? path.node.loc.start.line : "?";
+        const line = path.node.loc ? path.node.loc.start.line : '?';
 
         if (!foundAny) {
           console.log(`\n📁 ${file.path}`);
@@ -654,7 +652,7 @@ const scanForTshirtSizes = (file, root, j) => {
         }
 
         console.warn(
-          `  ⚠️  Line ${line}: theme.global.edgeSize.${sizeName} - may need manual review`
+          `  ⚠️  Line ${line}: theme.global.edgeSize.${sizeName} - may need manual review`,
         );
       }
     }
@@ -670,11 +668,11 @@ const scanForTshirtSizes = (file, root, j) => {
     let isPartOfAssignmentExpression = false;
     let current = path.parent;
     while (current) {
-      if (current.value && current.value.type === "VariableDeclarator") {
+      if (current.value && current.value.type === 'VariableDeclarator') {
         isPartOfVariableDeclarator = true;
         break;
       }
-      if (current.value && current.value.type === "AssignmentExpression") {
+      if (current.value && current.value.type === 'AssignmentExpression') {
         isPartOfAssignmentExpression = true;
         break;
       }
@@ -685,16 +683,16 @@ const scanForTshirtSizes = (file, root, j) => {
 
     // Check if this object has style-related properties
     const hasStyleProps = node.properties.some((prop) => {
-      if (prop.type === "Property") {
+      if (prop.type === 'Property') {
         const keyName = prop.key.name || prop.key.value;
         return [
-          "pad",
-          "margin",
-          "gap",
-          "width",
-          "height",
-          "round",
-          "border",
+          'pad',
+          'margin',
+          'gap',
+          'width',
+          'height',
+          'round',
+          'border',
         ].includes(keyName);
       }
       return false;
@@ -704,12 +702,12 @@ const scanForTshirtSizes = (file, root, j) => {
     if (hasStyleProps) {
       node.properties.forEach((prop) => {
         if (
-          prop.type === "Property" &&
+          prop.type === 'Property' &&
           isStringLiteral(prop.value) &&
           tshirtSizes.includes(prop.value.value)
         ) {
           const propKey = prop.key.name || prop.key.value;
-          const line = path.node.loc ? path.node.loc.start.line : "?";
+          const line = path.node.loc ? path.node.loc.start.line : '?';
 
           if (!foundAny) {
             console.log(`\n📁 ${file.path}`);
@@ -717,7 +715,7 @@ const scanForTshirtSizes = (file, root, j) => {
           }
 
           console.warn(
-            `  ⚠️  Line ${line}: Object with ${propKey}: "${prop.value.value}" - may need manual review`
+            `  ⚠️  Line ${line}: Object with ${propKey}: "${prop.value.value}" - may need manual review`,
           );
         }
       });
@@ -742,9 +740,9 @@ module.exports = (file, api, options) => {
 
   // Find all imports from 'grommet-icons'
   root.find(j.ImportDeclaration).forEach((path) => {
-    if (path.node.source.value === "grommet-icons") {
+    if (path.node.source.value === 'grommet-icons') {
       path.node.specifiers.forEach((specifier) => {
-        if (specifier.type === "ImportSpecifier") {
+        if (specifier.type === 'ImportSpecifier') {
           grommetIconComponents.add(specifier.imported.name);
         }
       });
@@ -759,15 +757,15 @@ module.exports = (file, api, options) => {
   root
     .find(j.MemberExpression, {
       object: {
-        object: { object: { name: "theme" }, property: { name: "global" } },
-        property: { name: "edgeSize" },
+        object: { object: { name: 'theme' }, property: { name: 'global' } },
+        property: { name: 'edgeSize' },
       },
     })
     .forEach((path) => {
       const prop = path.node.property;
 
       // Only transform identifiers (e.g., theme.global.edgeSize.small)
-      if (prop.type === "Identifier") {
+      if (prop.type === 'Identifier') {
         const oldKey = prop.name;
         const newKey = MAPS.spacing[oldKey];
         if (newKey && newKey !== oldKey) {
@@ -811,13 +809,13 @@ module.exports = (file, api, options) => {
     ...RADIUS_PROPS,
     ...OTHER_PROPS,
     // Add additional props that can contain pad, margin, round, height, width
-    "dropProps",
-    "defaultItemProps",
-    "boxProp",
-    "buttonProps",
-    "paginate",
-    "contentProps",
-    "chart",
+    'dropProps',
+    'defaultItemProps',
+    'boxProp',
+    'buttonProps',
+    'paginate',
+    'contentProps',
+    'chart',
   ];
 
   // Replace string literal, object, array, and conditional props (deep traversal)
@@ -829,7 +827,7 @@ module.exports = (file, api, options) => {
 
         // Check if this is a height prop on a grommet-icons component
         const isHeightOnGrommetIcon =
-          prop === "height" &&
+          prop === 'height' &&
           path.parent &&
           path.parent.value &&
           path.parent.value.name &&
@@ -842,49 +840,49 @@ module.exports = (file, api, options) => {
 
         // Handle special container props differently
         const isSpecialContainer = [
-          "dropProps",
-          "defaultItemProps",
-          "boxProp",
-          "buttonProps",
-          "paginate",
-          "contentProps",
-          "chart",
+          'dropProps',
+          'defaultItemProps',
+          'boxProp',
+          'buttonProps',
+          'paginate',
+          'contentProps',
+          'chart',
         ].includes(prop);
 
         // String literal
         if (isStringLiteral(val) && !isSpecialContainer) {
           const newValue = replaceSize(prop, val.value, fileInfo);
           if (newValue !== val.value) {
-            path.get("value").replace(j.stringLiteral(newValue));
+            path.get('value').replace(j.stringLiteral(newValue));
           }
         }
 
         // Deep traverse expression containers
-        if (val.type === "JSXExpressionContainer") {
+        if (val.type === 'JSXExpressionContainer') {
           if (isSpecialContainer) {
             // For special containers, only transform nested pad, margin, round, height, width, thickness
-            if (val.expression.type === "ObjectExpression") {
+            if (val.expression.type === 'ObjectExpression') {
               val.expression.properties.forEach((propNode) => {
-                if (propNode.type === "Property") {
+                if (propNode.type === 'Property') {
                   const keyName =
                     propNode.key && (propNode.key.name || propNode.key.value);
 
                   // Only transform specific nested properties
                   if (
                     [
-                      "pad",
-                      "margin",
-                      "round",
-                      "height",
-                      "width",
-                      "thickness",
+                      'pad',
+                      'margin',
+                      'round',
+                      'height',
+                      'width',
+                      'thickness',
                     ].includes(keyName)
                   ) {
                     if (isStringLiteral(propNode.value)) {
                       const newValue = replaceSize(
                         keyName,
                         propNode.value.value,
-                        fileInfo
+                        fileInfo,
                       );
                       if (newValue !== propNode.value.value) {
                         propNode.value = j.stringLiteral(newValue);
@@ -894,7 +892,7 @@ module.exports = (file, api, options) => {
                       propNode.value = deepReplaceSize(
                         keyName,
                         propNode.value,
-                        fileInfo
+                        fileInfo,
                       );
                     }
                   }
@@ -902,11 +900,11 @@ module.exports = (file, api, options) => {
               });
             }
             // Handle arrays within special containers (like chart prop)
-            if (val.expression.type === "ArrayExpression") {
+            if (val.expression.type === 'ArrayExpression') {
               val.expression.elements.forEach((element) => {
-                if (element && element.type === "ObjectExpression") {
+                if (element && element.type === 'ObjectExpression') {
                   element.properties.forEach((propNode) => {
-                    if (propNode.type === "Property") {
+                    if (propNode.type === 'Property') {
                       const keyName =
                         propNode.key &&
                         (propNode.key.name || propNode.key.value);
@@ -914,19 +912,19 @@ module.exports = (file, api, options) => {
                       // Transform thickness within chart array objects
                       if (
                         [
-                          "pad",
-                          "margin",
-                          "round",
-                          "height",
-                          "width",
-                          "thickness",
+                          'pad',
+                          'margin',
+                          'round',
+                          'height',
+                          'width',
+                          'thickness',
                         ].includes(keyName)
                       ) {
                         if (isStringLiteral(propNode.value)) {
                           const newValue = replaceSize(
                             keyName,
                             propNode.value.value,
-                            fileInfo
+                            fileInfo,
                           );
                           if (newValue !== propNode.value.value) {
                             propNode.value = j.stringLiteral(newValue);
@@ -936,7 +934,7 @@ module.exports = (file, api, options) => {
                           propNode.value = deepReplaceSize(
                             keyName,
                             propNode.value,
-                            fileInfo
+                            fileInfo,
                           );
                         }
                       }
@@ -960,22 +958,22 @@ module.exports = (file, api, options) => {
     // Only handle variables named after known props or common names (pad, columns, rows, etc.)
     const varNames = [
       ...ALL_PROPS,
-      "columns",
-      "rows",
-      "thickness",
-      "size",
-      "width",
-      "height",
-      "round",
-      "nameProps",
-      "valueProps",
+      'columns',
+      'rows',
+      'thickness',
+      'size',
+      'width',
+      'height',
+      'round',
+      'nameProps',
+      'valueProps',
     ];
     let prop = null;
-    if (id.type === "Identifier" && varNames.includes(id.name)) {
+    if (id.type === 'Identifier' && varNames.includes(id.name)) {
       prop = id.name;
     }
     // For destructured assignment: const { pad } = ...
-    if (id.type === "ObjectPattern") {
+    if (id.type === 'ObjectPattern') {
       id.properties.forEach((p) => {
         if (p.key && varNames.includes(p.key.name)) {
           prop = p.key.name;
@@ -994,17 +992,17 @@ module.exports = (file, api, options) => {
     const { right } = path.node;
     const varNames = [
       ...ALL_PROPS,
-      "columns",
-      "rows",
-      "thickness",
-      "size",
-      "width",
-      "height",
-      "round",
-      "nameProps",
+      'columns',
+      'rows',
+      'thickness',
+      'size',
+      'width',
+      'height',
+      'round',
+      'nameProps',
     ];
     let prop = null;
-    if (left.type === "Identifier" && varNames.includes(left.name)) {
+    if (left.type === 'Identifier' && varNames.includes(left.name)) {
       prop = left.name;
     }
     if (prop && right) {
@@ -1015,7 +1013,7 @@ module.exports = (file, api, options) => {
 
   // Handle components with container size mapping (Meter, TableCell, Cards)
   //  test -> <Chart size="small" />
-  ["Meter", "TableCell", "Cards", "DataCahrt", "Chart"].forEach(
+  ['Meter', 'TableCell', 'Cards', 'DataChart', 'Chart'].forEach(
     (componentName) => {
       root
         .find(j.JSXElement, {
@@ -1026,25 +1024,25 @@ module.exports = (file, api, options) => {
         .forEach((path) => {
           const { attributes } = path.node.openingElement;
           attributes.forEach((attr, index) => {
-            if (attr.type === "JSXAttribute" && attr.name.name === "size") {
+            if (attr.type === 'JSXAttribute' && attr.name.name === 'size') {
               if (attr.value && isStringLiteral(attr.value)) {
                 const newValue =
                   MAPS.container[attr.value.value] || attr.value.value;
                 if (newValue !== attr.value.value) {
                   attributes[index] = j.jsxAttribute(
-                    j.jsxIdentifier("size"),
-                    j.stringLiteral(newValue)
+                    j.jsxIdentifier('size'),
+                    j.stringLiteral(newValue),
                   );
                 }
               }
             }
           });
         });
-    }
+    },
   );
 
   // Handle components with spacing size mapping (RangeSelector)
-  ["RangeSelector"].forEach((componentName) => {
+  ['RangeSelector'].forEach((componentName) => {
     root
       .find(j.JSXElement, {
         openingElement: {
@@ -1054,14 +1052,14 @@ module.exports = (file, api, options) => {
       .forEach((path) => {
         const { attributes } = path.node.openingElement;
         attributes.forEach((attr, index) => {
-          if (attr.type === "JSXAttribute" && attr.name.name === "size") {
+          if (attr.type === 'JSXAttribute' && attr.name.name === 'size') {
             if (attr.value && isStringLiteral(attr.value)) {
               const newValue =
                 MAPS.spacing[attr.value.value] || attr.value.value;
               if (newValue !== attr.value.value) {
                 attributes[index] = j.jsxAttribute(
-                  j.jsxIdentifier("size"),
-                  j.stringLiteral(newValue)
+                  j.jsxIdentifier('size'),
+                  j.stringLiteral(newValue),
                 );
               }
             }
@@ -1074,20 +1072,20 @@ module.exports = (file, api, options) => {
   root
     .find(j.JSXElement, {
       openingElement: {
-        name: { name: "DataChart" },
+        name: { name: 'DataChart' },
       },
     })
     .forEach((path) => {
       const { attributes } = path.node.openingElement;
       attributes.forEach((attr, index) => {
-        if (attr.type === "JSXAttribute" && attr.name.name === "size") {
+        if (attr.type === 'JSXAttribute' && attr.name.name === 'size') {
           if (attr.value && isStringLiteral(attr.value)) {
             const newValue =
               MAPS.container[attr.value.value] || attr.value.value;
             if (newValue !== attr.value.value) {
               attributes[index] = j.jsxAttribute(
-                j.jsxIdentifier("size"),
-                j.stringLiteral(newValue)
+                j.jsxIdentifier('size'),
+                j.stringLiteral(newValue),
               );
             }
           }
@@ -1095,22 +1093,22 @@ module.exports = (file, api, options) => {
           // Handle object: <DataChart size={{ height: "small", width: "large" }} />
           if (
             attr.value &&
-            attr.value.type === "JSXExpressionContainer" &&
-            attr.value.expression.type === "ObjectExpression"
+            attr.value.type === 'JSXExpressionContainer' &&
+            attr.value.expression.type === 'ObjectExpression'
           ) {
             attr.value.expression.properties.forEach((propNode, propIndex) => {
               if (
                 isStringLiteral(propNode.value) &&
-                (propNode.key.name === "height" ||
-                  propNode.key.name === "width")
+                (propNode.key.name === 'height' ||
+                  propNode.key.name === 'width')
               ) {
                 const newValue =
                   MAPS.container[propNode.value.value] || propNode.value.value;
                 if (newValue !== propNode.value.value) {
                   attr.value.expression.properties[propIndex] = j.property(
-                    "init",
+                    'init',
                     propNode.key,
-                    j.stringLiteral(newValue)
+                    j.stringLiteral(newValue),
                   );
                 }
               }
@@ -1124,15 +1122,15 @@ module.exports = (file, api, options) => {
   root
     .find(j.JSXElement, {
       openingElement: {
-        name: { name: "Grid" },
+        name: { name: 'Grid' },
       },
     })
     .forEach((path) => {
       const { attributes } = path.node.openingElement;
       attributes.forEach((attr, index) => {
         if (
-          attr.type === "JSXAttribute" &&
-          (attr.name.name === "columns" || attr.name.name === "rows")
+          attr.type === 'JSXAttribute' &&
+          (attr.name.name === 'columns' || attr.name.name === 'rows')
         ) {
           // Handle string: <Grid columns="large" /> or <Grid rows="large" />
           if (attr.value && isStringLiteral(attr.value)) {
@@ -1141,18 +1139,18 @@ module.exports = (file, api, options) => {
             if (newValue !== attr.value.value) {
               attributes[index] = j.jsxAttribute(
                 j.jsxIdentifier(attr.name.name),
-                j.stringLiteral(newValue)
+                j.stringLiteral(newValue),
               );
             }
           }
 
           // Handle anything more complex (arrays, objects, conditionals, etc.)
-          if (attr.value && attr.value.type === "JSXExpressionContainer") {
+          if (attr.value && attr.value.type === 'JSXExpressionContainer') {
             const fileInfo = getFileInfo(file, path.node);
             attr.value.expression = deepReplaceSize(
               attr.name.name,
               attr.value.expression,
-              fileInfo
+              fileInfo,
             );
           }
         }
@@ -1164,7 +1162,7 @@ module.exports = (file, api, options) => {
     const { left } = path.node;
     const { right } = path.node;
     if (
-      left.type === "Identifier" &&
+      left.type === 'Identifier' &&
       ALL_PROPS.includes(left.name) &&
       isStringLiteral(right)
     ) {
@@ -1173,7 +1171,7 @@ module.exports = (file, api, options) => {
       if (newValue !== right.value) {
         path.node.right = j.stringLiteral(newValue);
       }
-    } else if (left.type === "Identifier" && ALL_PROPS.includes(left.name)) {
+    } else if (left.type === 'Identifier' && ALL_PROPS.includes(left.name)) {
       const fileInfo = getFileInfo(file, path.node);
       path.node.right = deepReplaceSize(left.name, right, fileInfo);
     }
@@ -1187,19 +1185,19 @@ module.exports = (file, api, options) => {
     if (callExpr.arguments && callExpr.arguments.length > 0) {
       callExpr.arguments.forEach((arg) => {
         // Look for object expressions that might contain size props
-        if (arg.type === "ObjectExpression") {
+        if (arg.type === 'ObjectExpression') {
           arg.properties.forEach((prop) => {
-            if (prop.type === "Property" || prop.type === "ObjectProperty") {
+            if (prop.type === 'Property' || prop.type === 'ObjectProperty') {
               const keyName = prop.key && (prop.key.name || prop.key.value);
 
               // Transform size prop specifically
-              if (keyName === "size" && isStringLiteral(prop.value)) {
+              if (keyName === 'size' && isStringLiteral(prop.value)) {
                 const fileInfo = getFileInfo(file, path.node);
                 // Use container mapping for size prop by default
                 const newValue = replaceSize(
-                  "width",
+                  'width',
                   prop.value.value,
-                  fileInfo
+                  fileInfo,
                 );
                 if (newValue !== prop.value.value) {
                   prop.value = j.stringLiteral(newValue);
@@ -1213,7 +1211,7 @@ module.exports = (file, api, options) => {
                   const newValue = replaceSize(
                     keyName,
                     prop.value.value,
-                    fileInfo
+                    fileInfo,
                   );
                   if (newValue !== prop.value.value) {
                     prop.value = j.stringLiteral(newValue);
@@ -1231,6 +1229,10 @@ module.exports = (file, api, options) => {
   });
 
   // get --quote flag from options argument
-  const quote = options.quote === "single" ? "single" : "double";
-  return root.toSource({ quote });
+  const quote = options.quote === 'single' ? 'single' : 'double';
+
+  // detect and maintain original file's end of line sequence
+  const lineTerminator = /\r\n/.test(file.source) ? '\r\n' : '\n';
+
+  return root.toSource({ quote, lineTerminator });
 };
