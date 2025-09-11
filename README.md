@@ -4,9 +4,7 @@ A codemod project for migrating Grommet theme versions.
 
 ## Features
 
-- Automated migration of t-shirt size props (e.g., `gap`, `margin`, `pad`, `thickness`, `border`, `height`, `width`, `round`, etc.)
 - Handles JS, JSX, TS, and TSX files
-- Scan mode to detect t-shirt sizes without making changes
 - Dry run and verbose options
 
 ## Usage
@@ -24,6 +22,13 @@ you can run the codemod directly with npx:
 ```
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 <path> [options]
 ```
+
+## Codemod transforms
+
+### Grommet-theme-hpe v6 to v7
+
+- Automated migration of t-shirt size props (e.g., `gap`, `margin`, `pad`, `thickness`, `border`, `height`, `width`, `round`, etc.)
+- Scan mode to detect t-shirt sizes without making changes.
 
 #### Options
 
