@@ -12,8 +12,8 @@
     "grommet-theme-hpe-codemod": "bin/cli.js"
   },
   "files": [
-    "bin",
-    "transforms",
+    "bin/",
+    "transforms/",
     "README.md",
     "LICENSE"
   ],
