@@ -1,6 +1,6 @@
 # Grommet Theme HPE Codemod
 
-A codemod project for migrating Grommet theme t-shirt size props and related values from v6 to v7.
+A codemod project for migrating Grommet theme versions.
 
 ## Features
 
@@ -14,22 +14,15 @@ A codemod project for migrating Grommet theme t-shirt size props and related val
 ### 1. Install dependencies
 
 ```
-npm install
+yarn install
 ```
-
 
 ### 2. Run the codemod
 
-After publishing to npm, you can run the codemod directly with npx:
+you can run the codemod directly with npx:
 
 ```
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 <path> [options]
-```
-
-Or, for local development:
-
-```
-node bin/cli.js migrate-theme-v6-to-v7 <path> [options]
 ```
 
 #### Options
@@ -50,11 +43,3 @@ node bin/cli.js migrate-theme-v6-to-v7 src/ --quote single --dry
 node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 1 --dry
 node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 2
 ```
-
-## Adding More Transforms
-
-Add new codemod scripts to the `transforms/` directory and register them in `bin/cli.js`.
-
-## License
-
-MIT
