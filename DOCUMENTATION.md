@@ -509,4 +509,4 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 
 ---
 
-_This documentation covers version 1.0.0 of grommet-theme-hpe-codemod. For the latest updates and changes, please refer to the project's repository._
+_This documentation covers version 0.1.0 of grommet-theme-hpe-codemod. For the latest updates and changes, please refer to the project's repository._
