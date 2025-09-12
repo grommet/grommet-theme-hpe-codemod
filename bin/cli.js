@@ -139,10 +139,6 @@ function runJscodeshift({ files, parser, extensions, scan }) {
   cmd += ` ${files.map((f) => `"${f}"`).join(' ')}`;
   try {
     execSync(cmd, { stdio: 'inherit' });
-    if (!scan && !dry) {
-      console.log('✅  Migration to Grommet Theme HPE v7 complete!');
-      console.warn('⚠️   WARNING: Fix any other manual changes needed.');
-    }
   } catch (err) {
     hadError = true;
     if (scan) {
@@ -190,4 +186,9 @@ runJscodeshift({
 
 if (hadError) {
   process.exit(1);
+}
+
+if (!dry && !args.includes('--scan')) {
+  console.log('✅  Migration to Grommet Theme HPE v7 complete!');
+  console.warn('⚠️ WARNING: Fix any other manual changes needed.');
 }

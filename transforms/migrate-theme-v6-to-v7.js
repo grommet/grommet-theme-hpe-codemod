@@ -65,7 +65,7 @@ const replaceSize = (prop, value, fileInfo = {}) => {
   if (RADIUS_PROPS.includes(prop)) {
     if (value === 'large' || value === 'xlarge') {
       console.warn(
-        `⚠️  DEPRECATION: radius="${value}" is updated to "xxlarge" (32px)${fileLocation}${lineLocation}.`,
+        `⚠️  radius="${value}" is now "xxlarge" (32px)${fileLocation}${lineLocation}.`,
       );
     }
   }
@@ -73,14 +73,14 @@ const replaceSize = (prop, value, fileInfo = {}) => {
   // Show updated value for border props
   if (BORDER_PROPS.includes(prop) && value === 'xlarge') {
     console.warn(
-      `⚠️  DEPRECATION: border="${value}" is updated to "large" ${fileLocation}${lineLocation}.`,
+      `⚠️  border="${value}" is now "large" ${fileLocation}${lineLocation}.`,
     );
   }
 
   // Show updated value for container props
   if (CONTAINER_PROPS.includes(prop) && value === 'xlarge') {
     console.warn(
-      `⚠️  DEPRECATION: ${prop}="${value}" is updated to "xxlarge" ${fileLocation}${lineLocation}.`,
+      `⚠️  ${prop}="${value}" is now "xxlarge" ${fileLocation}${lineLocation}.`,
     );
   }
 
