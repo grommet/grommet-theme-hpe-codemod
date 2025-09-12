@@ -51,50 +51,12 @@ const getMapForProp = (prop) => {
   return null;
 };
 
-// Replaces old size with new size and shows deprecation warnings with file location
+// Replaces old size with new size
 const replaceSize = (prop, value, fileInfo = {}) => {
   const map = getMapForProp(prop);
   if (!map) return value;
 
   const newValue = map[value] || value;
-
-  const fileLocation = fileInfo.file ? ` in ${fileInfo.file}` : '';
-  const lineLocation = fileInfo.line ? ` at line ${fileInfo.line}` : '';
-
-  // Show deprecation warnings for radius props
-  if (RADIUS_PROPS.includes(prop)) {
-    if (value === 'large' || value === 'xlarge') {
-      /* eslint-disable no-console */
-      console.warn(
-        `⚠️  DEPRECATION: radius="${value}" (${
-          value === 'large' ? '48px' : '96px'
-        }) is deprecated and now maps to "xxlarge" (32px)${fileLocation}${lineLocation}.`,
-      );
-    } else if (value === 'xxsmall') {
-      /* eslint-disable no-console */
-      console.warn(
-        `⚠️  DEPRECATION: radius="xxsmall" (3px) is deprecated and now maps to "xxsmall" (4px)${fileLocation}${lineLocation}.`,
-      );
-    }
-  }
-
-  // Show deprecation warnings for border props
-  if (
-    BORDER_PROPS.includes(prop) &&
-    (value === 'large' || value === 'xlarge')
-  ) {
-    const oldSize = value === 'large' ? '12px' : '24px';
-    console.warn(
-      `⚠️  DEPRECATION: border="${value}" (${oldSize}) is deprecated and now maps to "large" (6px)${fileLocation}${lineLocation}.`,
-    );
-  }
-
-  // Show deprecation warnings for container props
-  if (CONTAINER_PROPS.includes(prop) && value === 'xlarge') {
-    console.warn(
-      `⚠️  DEPRECATION: ${prop}="${value}" (1152px) is deprecated and now maps to "xxlarge" (1024px)${fileLocation}${lineLocation}.`,
-    );
-  }
 
   return newValue;
 };
