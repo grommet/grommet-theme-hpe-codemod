@@ -41,15 +41,7 @@ npm install
 
 ## Quick Start
 
-### 1. Scan for Changes (Recommended First Step)
-
-Before making any changes, scan your codebase to see what will be affected:
-
-```bash
-npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --scan
-```
-
-### 2. Preview Changes (Dry Run)
+### 3. Preview Changes (Dry Run)
 
 See what changes would be made without modifying files:
 
@@ -57,12 +49,20 @@ See what changes would be made without modifying files:
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --dry
 ```
 
-### 3. Apply Transformations
+### 2. Apply Transformations
 
 Apply the actual transformations:
 
 ```bash
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/
+```
+
+### 3. Scan for Changes
+
+scan your codebase to see areas in which need manual transforming.
+
+```bash
+npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --scan
 ```
 
 ## Transforms
@@ -179,8 +179,6 @@ npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --dry --quote single
 # Preview with detailed output (shows all files including NOC)
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --dry --verbose 1
 ```
-
-> **Tip**: To avoid verbose output showing NOC (No Changes) files, run without `--verbose` and use `git diff` afterward to see what actually changed.
 
 ### Development Commands
 
@@ -460,13 +458,12 @@ node bin/cli.js migrate-theme-v6-to-v7 src/ --dry --verbose 2
 
 #### "Unexpected transformations"
 
-- Use `--scan` mode first to understand what will change
 - Use `--dry` mode to preview changes
 - Check if custom property names conflict with standard Grommet props
 
 #### "Verbose mode shows too many NOC (No Changes) files"
 
-The verbose modes (`--verbose 1` and `--verbose 2`) show ALL files being processed, including those with no changes. This is a limitation of jscodeshift.
+The verbose modes (`--verbose 1`) show NOC files being processed. This is a limitation of jscodeshift.
 
 **Workarounds to see only changed files:**
 
@@ -484,60 +481,21 @@ npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/
 git status --porcelain
 ```
 
-### Getting Help
-
-1. **Scan first**: Always use scan mode to understand the scope
-2. **Test on a subset**: Try the codemod on a small subset of files first
-3. **Use dry run**: Preview changes before applying them
-4. **Check tests**: Look at the test suite for examples of supported patterns
-5. **Create backups**: Always backup your code before running transformations
-
 ## Best Practices
 
 ### Before Running the Codemod
 
 1. **Create a backup** or ensure your code is in version control
-2. **Run scan mode** to understand the scope of changes
+2. **Run dry mode** to understand the scope of changes
 3. **Test on a small subset** of files first
 4. **Review the migration mappings** to understand the changes
-
-### During Development/Testing
-
-**To see only files with changes** (avoiding NOC file noise):
-
-```bash
-# Recommended workflow for development
-# 1. First, scan to see what will be affected
-npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --scan
-
-# 2. Run transformation without verbose to reduce noise
-npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/
-
-# 3. Use git to see exactly what changed
-git diff --name-only           # Show only changed file names
-git diff --stat                # Show change summary
-git diff                       # Show full diff
-```
+5. **Run a scan mode** to understand the files that need manually reviewed
 
 ### After Running the Codemod
 
 1. **Run your tests** to ensure functionality is preserved
 2. **Review the changes** manually, especially flagged items from scan mode
 3. **Test the UI** to ensure visual consistency
-4. **Update any related documentation** that references old size values
-
-### Integration with CI/CD
-
-```bash
-# Example CI script
-npm install -g grommet-theme-hpe-codemod
-
-# Scan for issues (fail if any found)
-npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --scan
-
-# Apply transformations in build pipeline
-npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/
-```
 
 ## License
 
@@ -548,7 +506,6 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 - [Grommet Documentation](https://v2.grommet.io/)
 - [HPE Design System](https://design-system.hpe.design/)
 - [jscodeshift Documentation](https://github.com/facebook/jscodeshift)
-- [AST Explorer](https://astexplorer.net/) - Useful for understanding code transformations
 
 ---
 
