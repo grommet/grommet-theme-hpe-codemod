@@ -3,9 +3,9 @@
  * Enhanced Codemod dispatcher CLI for grommet-theme-hpe
  * Usage: node bin/cli.js <transform> <path> [options]
  */
-const { execSync } = require("child_process");
-const path = require("path");
-const fs = require("fs");
+const { execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
 
 const args = process.argv.slice(2);
 
@@ -26,35 +26,36 @@ const getAllFiles = (dir, exts) => {
 
 const printHelp = () => {
   const usage = [
-    "",
-    "Grommet Theme HPE Codemod",
-    "",
-    "Usage: node bin/cli.js <transform> <path> [options]",
-    "",
-    "Transforms:",
-    "  migrate-theme-v6-to-v7   Migrate v6 theme to v7",
-    "",
-    "Options:",
-    "  --dry      Run in dry mode (no changes)",
-    "  --scan     Scan for changes without transforming",
-    "  --verbose  Set verbosity level (0, 1, or 2). Default is 0",
-    "  --quote    Set quote style (single or double). Default is double",
-    "  --help     Show this help message",
-    "",
-    "Example usage:",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/ --scan",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/ --dry",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/ --quote single --dry",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 1 --dry",
-    "  node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 2",
-    "",
+    '',
+    'Grommet Theme HPE Codemod',
+    '',
+    'Usage: node bin/cli.js <transform> <path> [options]',
+    '',
+    'Transforms:',
+    '  migrate-theme-v6-to-v7   Migrate v6 theme to v7',
+    '',
+    'Options:',
+    '  --dry      Run in dry mode (no changes)',
+    '  --scan     Scan for changes without transforming',
+    '  --verbose  Set verbosity level (0, 1, or 2). Default is 0',
+    '  --quote    Set quote style (single or double). Default is double',
+    '  --help     Show this help message',
+    '',
+    'Example usage:',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --scan',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --dry',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --quote single --dry',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 0 --dry',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 1',
+    '  node bin/cli.js migrate-theme-v6-to-v7 src/ --verbose 2',
+    '',
   ];
-  console.log(usage.join("\n"));
+  console.log(usage.join('\n'));
 };
 
 // Handle --help flag
-if (args.includes("--help") || args.length < 2) {
+if (args.includes('--help') || args.length < 2) {
   printHelp();
   process.exit(0);
 }
@@ -63,9 +64,9 @@ const transform = args[0];
 const target = args[1];
 
 const transforms = {
-  "migrate-theme-v6-to-v7": path.join(
+  'migrate-theme-v6-to-v7': path.join(
     __dirname,
-    "../transforms/migrate-theme-v6-to-v7.js"
+    '../transforms/migrate-theme-v6-to-v7.js',
   ),
   // Add more transforms here aka v7-to-v8
 };
@@ -77,34 +78,36 @@ if (!transforms[transform]) {
 }
 
 // Handle --dry flag
-const dry = args.includes("--dry");
-const dryFlag = dry ? "--dry" : "";
+const dry = args.includes('--dry');
+const dryFlag = dry ? '--dry' : '';
 
 // Handle --verbose level flag
 let verboseLevel = 0;
-const verboseIndex = args.indexOf("--verbose");
+const verboseIndex = args.indexOf('--verbose');
 if (
   verboseIndex !== -1 &&
   args[verboseIndex + 1] &&
-  !Number.isNaN(Number(args[verboseIndex + 1]))
+  (args[verboseIndex + 1] === '0' ||
+    args[verboseIndex + 1] === '1' ||
+    args[verboseIndex + 1] === '2')
 ) {
   verboseLevel = Number(args[verboseIndex + 1]);
 }
 const verboseFlag = `-v ${verboseLevel}`;
 
 // Handle --quote flag
-let quoteFlag = "--quote=double";
-const quoteIndex = args.indexOf("--quote");
+let quoteFlag = '--quote=double';
+const quoteIndex = args.indexOf('--quote');
 if (quoteIndex !== -1 && args[quoteIndex + 1]) {
   const quoteValue = args[quoteIndex + 1];
-  if (quoteValue === "single" || quoteValue === "double") {
+  if (quoteValue === 'single' || quoteValue === 'double') {
     quoteFlag = `--quote=${quoteValue}`;
   }
 }
 
 let filesToProcess = [];
 if (fs.existsSync(target) && fs.statSync(target).isDirectory()) {
-  filesToProcess = getAllFiles(target, [".js", ".jsx", ".ts", ".tsx"]);
+  filesToProcess = getAllFiles(target, ['.js', '.jsx', '.ts', '.tsx']);
 } else {
   filesToProcess = [target];
 }
@@ -112,11 +115,11 @@ if (fs.existsSync(target) && fs.statSync(target).isDirectory()) {
 // Batch files by extension for faster processing
 const tsFiles = filesToProcess.filter((f) => {
   const ext = path.extname(f).toLowerCase();
-  return ext === ".ts" || ext === ".tsx";
+  return ext === '.ts' || ext === '.tsx';
 });
 const jsFiles = filesToProcess.filter((f) => {
   const ext = path.extname(f).toLowerCase();
-  return ext === ".js" || ext === ".jsx";
+  return ext === '.js' || ext === '.jsx';
 });
 
 let hadError = false;
@@ -133,54 +136,55 @@ function runJscodeshift({ files, parser, extensions, scan }) {
     if (verboseFlag) cmd += ` ${verboseFlag}`;
     if (quoteFlag) cmd += ` ${quoteFlag}`;
   }
-  cmd += ` ${files.map((f) => `"${f}"`).join(" ")}`;
+  cmd += ` ${files.map((f) => `"${f}"`).join(' ')}`;
   try {
-    execSync(cmd, { stdio: "inherit" });
+    execSync(cmd, { stdio: 'inherit' });
     if (!scan && !dry) {
-      console.log("✅  Migration to Grommet Theme HPE v7 complete!");
-      console.warn("⚠️   WARNING: Review any deprecation warnings.");
-      console.warn("⚠️   WARNING: Fix any other manual changes needed.");
+      console.log('✅  Migration to Grommet Theme HPE v7 complete!');
+      console.warn('⚠️   WARNING: Fix any other manual changes needed.');
     }
   } catch (err) {
     hadError = true;
     if (scan) {
-      console.error("Scan failed:", err.message);
+      console.error('Scan failed:', err.message);
     } else {
-      const type = parser === "tsx" ? "TypeScript" : "JS/JSX";
+      const type = parser === 'tsx' ? 'TypeScript' : 'JS/JSX';
       console.error(`Error processing ${type} files`);
     }
   }
 }
 
-if (args.includes("--scan")) {
-  console.log("🔍 Scanning for changes...\n");
+if (args.includes('--scan')) {
+  console.log('🔍 Scanning for changes...\n');
   runJscodeshift({
     files: tsFiles,
-    parser: "tsx",
-    extensions: "ts,tsx",
+    parser: 'tsx',
+    extensions: 'ts,tsx',
     scan: true,
   });
   runJscodeshift({
     files: jsFiles,
     parser: null,
-    extensions: "js,jsx",
+    extensions: 'js,jsx',
     scan: true,
   });
   if (hadError) process.exit(1);
-  console.log("\n✅ Scan complete. Files listed above may need review.");
+  console.log(
+    '\n✅ Scan complete. Files listed above may need review and manual changes.',
+  );
   process.exit(0);
 }
 
 runJscodeshift({
   files: tsFiles,
-  parser: "tsx",
-  extensions: "ts,tsx",
+  parser: 'tsx',
+  extensions: 'ts,tsx',
   scan: false,
 });
 runJscodeshift({
   files: jsFiles,
   parser: null,
-  extensions: "js,jsx",
+  extensions: 'js,jsx',
   scan: false,
 });
 
