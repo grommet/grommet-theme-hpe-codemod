@@ -144,7 +144,7 @@ Properties: `round`
 
 - **Level 0** (default): Minimal output, only shows essential information
 - **Level 1**: Shows file processing information and summary (includes files in which have no changes)
-- **Level 2**: Shows files in which were successfully transformed
+- **Level 2**: Shows files that were successfully transformed
 
 The `--scan` mode scans the entire project to look for areas that may need manual transforming.
 
