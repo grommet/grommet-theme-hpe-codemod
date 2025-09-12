@@ -59,7 +59,7 @@ npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/
 
 ### 3. Scan for Changes
 
-scan your codebase to see areas in which need manual transforming.
+scan your codebase to see areas that need manual transforming.
 
 ```bash
 npx grommet-theme-hpe-codemod migrate-theme-v6-to-v7 src/ --scan
