@@ -132,9 +132,6 @@ function runJscodeshift({ files, parser, extensions, scan }) {
 
   // For verbose 2, process files individually to show which ones are changed
   if (!scan && verboseLevel === 2) {
-    console.log(
-      `Processing ${files.length} files individually to show changes...`,
-    );
     let changedFiles = 0;
     let totalFiles = 0;
 
@@ -159,9 +156,12 @@ function runJscodeshift({ files, parser, extensions, scan }) {
       }
     });
 
-    console.log(
-      `\n🎯 T-shirt size migration complete: ${changedFiles} files updated, ${totalFiles - changedFiles} files unchanged (${totalFiles} total files processed)`,
-    );
+    // Only show summary if there were files to process and some changes or errors occurred
+    if (totalFiles > 0 && (changedFiles > 0 || hadError)) {
+      console.log(
+        `\n🎯 T-shirt size migration complete: ${changedFiles} files updated, ${totalFiles - changedFiles} files unchanged (${totalFiles} total files processed)`,
+      );
+    }
     return;
   }
 
@@ -229,6 +229,17 @@ if (hadError) {
 }
 
 if (!dry && !args.includes('--scan')) {
-  console.log('✅  Migration to Grommet Theme HPE v7 complete!');
-  console.warn('⚠️ WARNING: Fix any other manual changes needed.');
+  console.log('');
+  console.log('📋 What happened:');
+  console.log(
+    '   • Automatically identified and updated t-shirt size values with high confidence',
+  );
+  console.log(
+    '   • Transformed props like pad, margin, gap, height, width, round, etc.',
+  );
+  console.log('');
+  console.log('🔍 Next step:');
+  console.log(
+    ' Use --scan to see potential manual changes that may need manual review or fix',
+  );
 }
