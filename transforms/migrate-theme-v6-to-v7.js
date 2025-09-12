@@ -51,7 +51,7 @@ const getMapForProp = (prop) => {
   return null;
 };
 
-// Replaces old size with new size and shows update messages with file location
+// Replaces old size with new size and shows deprecation warnings with file location
 const replaceSize = (prop, value, fileInfo = {}) => {
   const map = getMapForProp(prop);
   if (!map) return value;
@@ -61,28 +61,26 @@ const replaceSize = (prop, value, fileInfo = {}) => {
   const fileLocation = fileInfo.file ? ` in ${fileInfo.file}` : '';
   const lineLocation = fileInfo.line ? ` at line ${fileInfo.line}` : '';
 
-  // Show update messages for radius props
+  // Show updated value for radius props
   if (RADIUS_PROPS.includes(prop)) {
     if (value === 'large' || value === 'xlarge') {
       console.warn(
-        `⚠️ radius="${value}" now maps to "xxlarge"${fileLocation}${lineLocation}.`,
+        `⚠️  DEPRECATION: radius="${value}" is updated to "xxlarge" (32px)${fileLocation}${lineLocation}.`,
       );
+    }
   }
 
-  // Show update messages for border props
-  if (
-    BORDER_PROPS.includes(prop) &&
-    value === 'xlarge'
-  ) {
+  // Show updated value for border props
+  if (BORDER_PROPS.includes(prop) && value === 'xlarge') {
     console.warn(
-      `⚠️  border="${value}" now maps to "large" ${fileLocation}${lineLocation}.`,
+      `⚠️  DEPRECATION: border="${value}" is updated to "large" ${fileLocation}${lineLocation}.`,
     );
   }
 
-  // Show update messages for container props
+  // Show updated value for container props
   if (CONTAINER_PROPS.includes(prop) && value === 'xlarge') {
     console.warn(
-      `⚠️  ${prop}="${value}" now maps to "xxlarge" ${fileLocation}${lineLocation}.`,
+      `⚠️  DEPRECATION: ${prop}="${value}" is updated to "xxlarge" ${fileLocation}${lineLocation}.`,
     );
   }
 
