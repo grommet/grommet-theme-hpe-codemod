@@ -41,7 +41,7 @@ npm install
 
 ## Quick Start
 
-### 3. Preview Changes (Dry Run)
+### 1. Preview Changes (Dry Run)
 
 See what changes would be made without modifying files:
 
