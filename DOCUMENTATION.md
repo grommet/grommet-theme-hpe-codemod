@@ -143,10 +143,10 @@ Properties: `round`
 ### Verbosity Levels
 
 - **Level 0** (default): Minimal output, only shows essential information
-- **Level 1**: Shows file processing information and summary (includes all processed files, even those with no changes)
-- **Level 2**: Shows detailed transformation information for debugging
+- **Level 1**: Shows file processing information and summary (includes files in which have no changes)
+- **Level 2**: Shows files in which were successfully transformed
 
-> **Note**: Verbose levels 1 and 2 will show ALL files being processed, including those marked as "NOC" (No Changes). This is a limitation of the underlying jscodeshift tool. To see only files with changes, use `--scan` mode first, or run without verbose flags and check git diff after transformation.
+`--scan` mode, this scans the entire project in order to look for areas that may need manual transformating.
 
 ## Usage Examples
 

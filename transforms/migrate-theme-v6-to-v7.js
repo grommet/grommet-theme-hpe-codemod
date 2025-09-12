@@ -51,7 +51,7 @@ const getMapForProp = (prop) => {
   return null;
 };
 
-// Replaces old size with new size and shows deprecation warnings with file location
+// Replaces old size with new size
 const replaceSize = (prop, value, fileInfo = {}) => {
   const map = getMapForProp(prop);
   if (!map) return value;

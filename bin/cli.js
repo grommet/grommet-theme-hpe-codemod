@@ -39,8 +39,8 @@ const printHelp = () => {
     '  --scan     Scan for changes without transforming',
     '  --verbose  Set verbosity level (0, 1, or 2). Default is 0',
     '             0: Minimal output, only shows essential information',
-    '             1: Shows file processing information and summary',
-    '             2: Shows detailed info, filtering out unchanged files',
+    '             1: Shows files that contain no changes (default jscodeshift output)',
+    '             2: Shows only files that were successfully updated (recommended)',
     '  --quote    Set quote style (single or double). Default is double',
     '  --help     Show this help message',
     '',
@@ -229,6 +229,7 @@ if (hadError) {
 }
 
 if (!dry && !args.includes('--scan')) {
+  console.log('\n✅ Grommet Theme HPE v6 → v7 migration complete!');
   console.log('');
   console.log('📋 What happened:');
   console.log(
@@ -240,6 +241,10 @@ if (!dry && !args.includes('--scan')) {
   console.log('');
   console.log('🔍 Next step:');
   console.log(
-    ' Use --scan to see potential manual changes that may need manual review or fix',
+    '   Use --scan to see potential manual changes that may need manual review or fix',
+  );
+  console.log('');
+  console.log(
+    '💡 Need help? Use --scan to see potential manual changes that may need manual review or fix',
   );
 }
