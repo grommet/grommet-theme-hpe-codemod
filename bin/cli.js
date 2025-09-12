@@ -38,6 +38,9 @@ const printHelp = () => {
     '  --dry      Run in dry mode (no changes)',
     '  --scan     Scan for changes without transforming',
     '  --verbose  Set verbosity level (0, 1, or 2). Default is 0',
+    '             0: Minimal output, only shows essential information',
+    '             1: Shows file processing information and summary',
+    '             2: Shows detailed info, filtering out unchanged files',
     '  --quote    Set quote style (single or double). Default is double',
     '  --help     Show this help message',
     '',
@@ -126,6 +129,43 @@ let hadError = false;
 
 function runJscodeshift({ files, parser, extensions, scan }) {
   if (files.length === 0) return;
+
+  // For verbose 2, process files individually to show which ones are changed
+  if (!scan && verboseLevel === 2) {
+    console.log(
+      `Processing ${files.length} files individually to show changes...`,
+    );
+    let changedFiles = 0;
+    let totalFiles = 0;
+
+    files.forEach((file) => {
+      totalFiles++;
+      let cmd = `npx jscodeshift`;
+      if (parser) cmd += ` --parser=${parser}`;
+      cmd += ` -t "${transforms[transform]}"`;
+      if (dryFlag) cmd += ` ${dryFlag}`;
+      if (quoteFlag) cmd += ` ${quoteFlag}`;
+      cmd += ` "${file}"`;
+
+      try {
+        const output = execSync(cmd, { encoding: 'utf8', shell: true });
+        // Check if the file was modified (look for "1 ok" or similar in output)
+        if (output.includes('1 ok') || (dryFlag && output.trim().length > 0)) {
+          console.log(`✅ Updated t-shirt sizes: ${file}`);
+          changedFiles++;
+        }
+      } catch (err) {
+        console.error(`❌ ERROR: ${file} - ${err.message}`);
+      }
+    });
+
+    console.log(
+      `\n🎯 T-shirt size migration complete: ${changedFiles} files updated, ${totalFiles - changedFiles} files unchanged (${totalFiles} total files processed)`,
+    );
+    return;
+  }
+
+  // Regular processing for other verbose levels
   let cmd = `npx jscodeshift`;
   if (parser) cmd += ` --parser=${parser}`;
   if (scan) cmd += ` --scan=true`;
@@ -138,7 +178,7 @@ function runJscodeshift({ files, parser, extensions, scan }) {
   }
   cmd += ` ${files.map((f) => `"${f}"`).join(' ')}`;
   try {
-    execSync(cmd, { stdio: 'inherit' });
+    execSync(cmd, { stdio: 'inherit', shell: true });
   } catch (err) {
     hadError = true;
     if (scan) {
