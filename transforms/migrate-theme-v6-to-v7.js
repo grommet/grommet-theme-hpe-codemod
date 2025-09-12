@@ -58,32 +58,6 @@ const replaceSize = (prop, value, fileInfo = {}) => {
 
   const newValue = map[value] || value;
 
-  const fileLocation = fileInfo.file ? ` in ${fileInfo.file}` : '';
-  const lineLocation = fileInfo.line ? ` at line ${fileInfo.line}` : '';
-
-  // Show updated value for radius props
-  if (RADIUS_PROPS.includes(prop)) {
-    if (value === 'large' || value === 'xlarge') {
-      console.warn(
-        `⚠️  radius="${value}" is now "xxlarge" (32px)${fileLocation}${lineLocation}.`,
-      );
-    }
-  }
-
-  // Show updated value for border props
-  if (BORDER_PROPS.includes(prop) && value === 'xlarge') {
-    console.warn(
-      `⚠️  border="${value}" is now "large" ${fileLocation}${lineLocation}.`,
-    );
-  }
-
-  // Show updated value for container props
-  if (CONTAINER_PROPS.includes(prop) && value === 'xlarge') {
-    console.warn(
-      `⚠️  ${prop}="${value}" is now "xxlarge" ${fileLocation}${lineLocation}.`,
-    );
-  }
-
   return newValue;
 };
 
